@@ -9,4 +9,4 @@ const recordingSchema = new mongoose.Schema({
   path: String,
 })
 
-export default mongoose.model('Recording', recordingSchema)
+export const Recording = mongoose.model('Recording', recordingSchema)

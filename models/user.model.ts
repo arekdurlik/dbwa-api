@@ -1,9 +1,17 @@
 import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String,
+  username: {
+    type: String,
+    unique: true,
+    required: true,
+    lowercase: true,
+    trim: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
   settings: {
     mappings: [{
       effect: String,
@@ -11,6 +19,8 @@ const userSchema = new mongoose.Schema({
       key: String
     }]
   }
+}, { 
+  timestamps: true
 })
 
-export default mongoose.model('User', userSchema)
+export const User = mongoose.model('User', userSchema)

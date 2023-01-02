@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import Pedalboard from '../models/pedalboard.model'
+import { Pedalboard } from '../models/pedalboard.model'
 
 const getAllBoards = async (req: Request, res: Response) => {
   const pedalboards = await Pedalboard.find()
