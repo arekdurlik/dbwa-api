@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -12,13 +12,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  settings: {
-    mappings: [{
-      effect: String,
-      param: String,
-      key: String
-    }]
-  }
+  effects: [
+    { type : Types.ObjectId, ref: 'Effect' }
+  ],
+  pedalboards: [
+    { type: Types.ObjectId, ref: 'Pedalboard' }
+  ],
+  recordings: [
+    { type: Types.ObjectId, ref: 'Recording' }
+  ]
 }, { 
   timestamps: true
 })

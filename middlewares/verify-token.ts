@@ -1,8 +1,8 @@
-import { RequestHandler } from 'express'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { getTokenPair } from '../controllers/auth.controller'
+import { TokenPayload, getTokenPair } from '../controllers/auth.controller'
 
-export const verifyToken: RequestHandler = (req, res, next) => {
+export const verifyToken = (req: Request, res: Response, next: NextFunction)  => {
   const token = req.cookies['token']
   const refreshToken = req.cookies['refresh-token']
 
@@ -12,15 +12,18 @@ export const verifyToken: RequestHandler = (req, res, next) => {
 
     // verify token
     try {
-      const decodedToken = jwt.verify(token, secret1)
-
+      const decodedToken = jwt.verify(token, secret1) as TokenPayload
+      
       // token is valid
-      if (decodedToken) return next()
+      if (decodedToken) {
+        req.auth = decodedToken
+        return next()
+      }
 
     } catch (error) {
       // token is invalid, verify refresh token
       try {
-        const decodedRefreshToken = jwt.verify(refreshToken, secret2)
+        const decodedRefreshToken = jwt.verify(refreshToken, secret2) as TokenPayload
 
         // refresh token is valid, generate new token pair
         if (decodedRefreshToken && typeof decodedRefreshToken !== 'string') {
@@ -28,6 +31,7 @@ export const verifyToken: RequestHandler = (req, res, next) => {
 
             res.cookie('token', token, { httpOnly: true })
             res.cookie('refresh-token', refreshToken, { httpOnly: true })
+            req.auth = decodedRefreshToken
             return next()
         }
         // invalid token and refresh token

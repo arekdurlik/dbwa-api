@@ -11,7 +11,7 @@ type UserData = {
   username: string
 }
 
-type TokenPayload = UserData & JwtPayload
+export type TokenPayload = UserData & JwtPayload
 
 /**
  * Sign up a new user
@@ -87,17 +87,23 @@ const getUserData = (req: Request, res: Response): Response<UserData | { message
   const token = req.cookies['token']
   const secret1 = process.env.SECRET_1!
 
+  const decoded = decodeToken(token, secret1)
+
+  return decoded
+  ? res.status(200).json(decoded)
+  : res.status(401).json({ message: 'Unauthorized request' })
+}
+
+export const decodeToken = (token: string, secret: string) => {
   try {
-    const decoded = jwt.verify(token, secret1) as TokenPayload
+    const decoded = jwt.verify(token, secret) as TokenPayload
     
-    return res.status(200).json({
+    return {
       id: decoded.id,
       username: decoded.username
-    })
+    }
   } catch {
-    return res.status(401).json({
-      message: 'Unauthorized request'
-    })
+    return false
   }
 }
 

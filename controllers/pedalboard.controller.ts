@@ -7,7 +7,7 @@ const getAllBoards = async (req: Request, res: Response) => {
   res.status(200).json(pedalboards)
 }
 
-const getBoard = (req: Request, res: Response) => {
+const getBoardById = (req: Request, res: Response) => {
   res.status(200).json({ message: `get pedalboard ${req.params.id}` })
 }
 
@@ -29,7 +29,7 @@ const deleteBoard = (req: Request, res: Response) => {
 
 export {
   getAllBoards,
-  getBoard,
+  getBoardById,
   setBoard,
   updateBoard,
   deleteBoard
