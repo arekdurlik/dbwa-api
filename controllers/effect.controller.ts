@@ -121,7 +121,7 @@ const updateEffect = async (req: Request<{ id: string }, UpdateEffectRequest>, r
 }
 
 /**
- * Delete effect by id..
+ * Delete effect by id.
  */
 const deleteEffect = async (req: Request<{ id: string }>, res: Response) => {
   if (!req.auth) return res.status(401).json({ message: 'Unauthorized request' })
@@ -136,13 +136,13 @@ const deleteEffect = async (req: Request<{ id: string }>, res: Response) => {
   session.startTransaction()
 
   try {
-    const deleted = await Effect.findOneAndDelete({ _id: id })
+    const deleted = await Effect.findOneAndDelete([{ _id: id }], { session })
 
     if (deleted) {
       await User.updateOne(
         { username: deleted.author }, 
         { $pull: { effects: deleted.id }}
-      )
+      ).session(session)
 
       res.status(200).json(deleted)
     }
