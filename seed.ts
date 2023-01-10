@@ -15,34 +15,34 @@ export const seedDb = async () => {
     recordings: []
   })
 
-  await Effect.create([
-  {
-    author: 'test2',
-    title: 'Test effect',
-    description: 'Test description',
-    public: false,
-    effect: {
-      name: 'analogDelay',
-      values: {
-        delay: 0.5,
-        regen: 0.7,
-        mix: 0.5
+  /* await Effect.create([
+    {
+      author: 'test2',
+      title: 'Test effect',
+      description: 'Test description',
+      public: false,
+      effect: {
+        name: 'analogDelay',
+        values: {
+          delay: 0.5,
+          regen: 0.7,
+          mix: 0.5
+        }
       }
-    }
-  },
-  {
-    author: 'test3',
-    title: 'Test effect 2',
-    description: 'Test description 2',
-    public: true,
-    effect: {
-      name: 'analogDelay',
-      values: {
-        delay: 0.5,
-        regen: 0.7,
-        mix: 0.5
+    },
+    {
+      author: 'test3',
+      title: 'Test effect 2',
+      description: 'Test description 2',
+      public: true,
+      effect: {
+        name: 'analogDelay',
+        values: {
+          delay: 0.5,
+          regen: 0.7,
+          mix: 0.5
+        }
       }
-    }
-  },
-])
+    },
+  ]) */
 }

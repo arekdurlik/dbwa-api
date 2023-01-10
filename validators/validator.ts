@@ -1,6 +1,6 @@
-import Joi from 'joi'
+import Joi, { ObjectSchema, ArraySchema } from 'joi'
 
-export const validator = <T>(schema: Joi.ObjectSchema, body: T): Joi.ValidationResult<T> => 
+export const validator = <T>(schema: ObjectSchema | ArraySchema, body: T): Joi.ValidationResult<T> => 
   schema.validate(body, { abortEarly: false })
 
 /**

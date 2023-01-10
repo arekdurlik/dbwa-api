@@ -33,3 +33,10 @@ const effectSchema = new mongoose.Schema({
 })
 
 export const Effect = mongoose.model('Effect', effectSchema)
+
+export const findById = async (id: string) => Effect.findById(id)
+
+export const findManyByIds = async (ids: any[], effect?: string) => Effect.find({ 
+  _id: { $in: ids },
+  ...(effect) && { 'effect.name': effect }
+})

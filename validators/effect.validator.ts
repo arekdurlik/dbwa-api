@@ -3,17 +3,17 @@ import { joiObjectId, validator } from './validator'
 
 // getEffects
 export type GetEffectsRequest = {
-  public?: boolean
+  private?: boolean
   name?: string
   title?: string
   user?: string
 }
 
 const getEffectsSchema = Joi.object<GetEffectsRequest>({
-  public: Joi.boolean().default(true),
+  private: Joi.boolean().default(false),
   name: Joi.string(),
   title: Joi.string(),
-  user: joiObjectId()
+  user: Joi.string(),
 })
 
 export const validateGetEffects = (body: GetEffectsRequest) => 
@@ -52,7 +52,7 @@ export type UpdateEffectRequest = Partial<SetEffectRequest> & { id: string }
 
 const effectSchema = {
   title: Joi.string().min(2),
-  description: Joi.string(),
+  description: Joi.string().allow(''),
   public: Joi.boolean(),
   effect: {
     name: Joi.string(),

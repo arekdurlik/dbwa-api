@@ -6,7 +6,7 @@ import { TypedRequestBody } from '../types'
 
 const saltRounds = 10
 
-type UserData = {
+export type UserData = {
   id: string,
   username: string
 }
@@ -17,6 +17,7 @@ export type TokenPayload = UserData & JwtPayload
  * Sign up a new user
  */
 const signUp = async (req: TypedRequestBody<{ username: string, password: string }>, res: Response) => {
+  console.log('sign up')
   if (!req.body.username || !req.body.password) {
     res.json(400).json({ message: 'Invalid request data' })
   }
@@ -31,18 +32,21 @@ const signUp = async (req: TypedRequestBody<{ username: string, password: string
   const salt = genSaltSync(saltRounds)
   const hashed = hashSync(req.body.password, salt)
 
-  const created = await User.create({ 
-    username: req.body.username,
-    password: hashed 
-  })
-  
-  if (created) {
-    res.status(200).json({ message: 'User successfully signed up', user: {
-      id: created.id,
-      username: created.username
-    }})
-  } else {
-    res.status(500).json({ message: 'Error while creating a new user' })
+
+  try {
+    const created = await User.create({ 
+      username: req.body.username,
+      password: hashed 
+    })
+    
+    if (created) {
+      res.status(200).json({ message: 'User successfully signed up', user: {
+        id: created.id,
+        username: created.username
+      }})
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error while creating a new user', error })
   }
 }
 
@@ -77,21 +81,6 @@ const signOut = async (req: Request, res: Response) => {
   res.clearCookie('token')
   res.clearCookie('refresh-token')
   res.status(200).json({ message: 'User successfully signed out' })
-}
-
-/**
- * Retrieve user data from the access token
- * @returns response with user data
- */
-const getUserData = (req: Request, res: Response): Response<UserData | { message: string }> => {
-  const token = req.cookies['token']
-  const secret1 = process.env.SECRET_1!
-
-  const decoded = decodeToken(token, secret1)
-
-  return decoded
-  ? res.status(200).json(decoded)
-  : res.status(401).json({ message: 'Unauthorized request' })
 }
 
 export const decodeToken = (token: string, secret: string) => {
@@ -130,6 +119,5 @@ export {
   signUp,
   signIn,
   signOut,
-  getUserData,
   getTokenPair
 }
