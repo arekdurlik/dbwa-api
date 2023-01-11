@@ -17,7 +17,6 @@ export type TokenPayload = UserData & JwtPayload
  * Sign up a new user
  */
 const signUp = async (req: TypedRequestBody<{ username: string, password: string }>, res: Response) => {
-  console.log('sign up')
   if (!req.body.username || !req.body.password) {
     res.json(400).json({ message: 'Invalid request data' })
   }

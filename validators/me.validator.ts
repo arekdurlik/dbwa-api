@@ -23,3 +23,15 @@ const changeVisibilitySchema = Joi.array<ChangeVisibilityRequest>().items({
 
 export const validateChangeVisibility = (body: ChangeVisibilityRequest) =>
   validator(changeVisibilitySchema, body)
+
+// editLibrary
+export type EditLibraryRequest = {
+  id: string
+}
+
+const editLibrarySchema = Joi.object<EditLibraryRequest>({
+  id: joiObjectId().required()
+})
+
+export const validateEditLibrary = (body: EditLibraryRequest) =>
+  validator(editLibrarySchema, body)

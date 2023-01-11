@@ -1,13 +1,13 @@
-import { Types } from 'mongoose'
 import { Effect } from './models/effect.model'
+import { Pedalboard } from './models/pedalboard.model'
 import { User } from './models/user.model'
 
 export const seedDb = async () => {
   await Effect.deleteMany({})
   await User.deleteMany({})
+  await Pedalboard.deleteMany({})
 
   await User.create({
-    _id: new Types.ObjectId(1),
     username: 'tester',
     password: '$2b$10$lpSxVQNXbGIoqQJDtDS5UuahLmnTmYxnHvM6UYWFJ7zmnij9ya/K6', // test
     effects: [],
@@ -15,9 +15,17 @@ export const seedDb = async () => {
     recordings: []
   })
 
-  /* await Effect.create([
+  await User.create({
+    username: 'tester2',
+    password: '$2b$10$lpSxVQNXbGIoqQJDtDS5UuahLmnTmYxnHvM6UYWFJ7zmnij9ya/K6', // test
+    effects: [],
+    pedalboards: [],
+    recordings: []
+  })
+
+  await Effect.create([
     {
-      author: 'test2',
+      author: 'tester',
       title: 'Test effect',
       description: 'Test description',
       public: false,
@@ -31,7 +39,7 @@ export const seedDb = async () => {
       }
     },
     {
-      author: 'test3',
+      author: 'tester2',
       title: 'Test effect 2',
       description: 'Test description 2',
       public: true,
@@ -44,5 +52,5 @@ export const seedDb = async () => {
         }
       }
     },
-  ]) */
+  ])
 }

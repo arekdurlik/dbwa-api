@@ -4,8 +4,8 @@ import { verifyToken } from '../middlewares/verify-token'
 
 const router = Router()
 
-router.get(   '/',                  getEffects)
-router.get(   '/:id',               getEffectById)
+router.get(   '/',    verifyToken,  getEffects)
+router.get(   '/:id', verifyToken,  getEffectById)
 router.post(  '/',    verifyToken,  setEffect)
 router.put(   '/:id', verifyToken,  updateEffect)
 router.delete('/:id', verifyToken,  deleteEffect) 

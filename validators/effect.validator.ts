@@ -4,14 +4,14 @@ import { joiObjectId, validator } from './validator'
 // getEffects
 export type GetEffectsRequest = {
   private?: boolean
-  name?: string
+  effect?: string
   title?: string
   user?: string
 }
 
 const getEffectsSchema = Joi.object<GetEffectsRequest>({
   private: Joi.boolean().default(false),
-  name: Joi.string(),
+  effect: Joi.string(),
   title: Joi.string(),
   user: Joi.string(),
 })

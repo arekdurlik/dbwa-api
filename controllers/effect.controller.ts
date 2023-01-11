@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Effect, findById, findManyByIds } from '../models/effect.model'
+import { Effect } from '../models/effect.model'
 import { EffectByIdRequest, GetEffectsRequest, SetEffectRequest, UpdateEffectRequest, validateDeleteEffect, validateGetEffectById, validateGetEffects, validateSetEffect, validateUpdateEffect } from '../validators/effect.validator'
 import mongoose, { Types } from 'mongoose'
 import { TypedRequestBody } from '../types'
@@ -10,23 +10,23 @@ import { ChangeVisibilityRequest, validateChangeVisibility } from '../validators
  * 
  * Available parameters:
  * @param req.private - include private effects. Defaults to false
- * @param req.name - effect name equals value
+ * @param req.effect - effect name equals value
  * @param req.title - document title includes value
- * @param req.user - user id equals value
+ * @param req.user - username of the author equals value
  */
 const getEffects = async (req: Request<GetEffectsRequest>, res: Response) => {
   const { value, error } = validateGetEffects(req.query)
 
   if (error) return res.status(422).json(error.details)
   
-  const { user, title, private: includePrivate, name } = value
+  const { user, title, private: includePrivate, effect } = value
 
   try {
     const effects = await Effect.find({
       ...(title)            && { title: new RegExp(`${title}`, 'i') },
       ...(!includePrivate)  && { public: true },
       ...(user)             && { author: user },
-      ...(name)             && { 'effect.name': new RegExp(`^${name}$`, 'i') }
+      ...(effect)           && { 'effect.name': new RegExp(`^${effect}$`, 'i') }
     })
     
     res.status(200).json(effects)
@@ -45,7 +45,7 @@ const getEffectById = async (req: Request<EffectByIdRequest>, res: Response) => 
   if (error) return res.status(422).json(error.details)
 
   try {
-    const effect = await findById(value.id)
+    const effect = await Effect.findById(value.id)
   
     effect 
     ? res.status(200).json(effect)
@@ -136,7 +136,7 @@ const deleteEffect = async (req: Request<{ id: string }>, res: Response) => {
   session.startTransaction()
 
   try {
-    const deleted = await Effect.findOneAndDelete([{ _id: id }], { session })
+    const deleted = await Effect.findOneAndDelete({ _id: id }).session(session)
 
     if (deleted) {
       await User.updateOne(
@@ -166,7 +166,8 @@ const changeVisibility = async (req: TypedRequestBody<ChangeVisibilityRequest>, 
     const bulkChange = entries.map(({ id, value }) => ({
       updateOne: {
         filter: {
-          _id: new Types.ObjectId(id)
+          _id: id,
+          author: req.auth?.username
         },
         update: {
           public: value
